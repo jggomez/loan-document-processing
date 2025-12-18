@@ -90,15 +90,15 @@ Here is an overview of the project's directory structure:
 
 ### Context Diagram
 
-<img width="681" height="581" alt="Loan System - Context drawio" src="https://github.com/user-attachments/assets/a3e5e98b-cf21-45fb-a589-09de3c8251fb" />
+<img width="681" height="581" alt="Loan System - Context drawio" src="https://github.com/user-attachments/assets/f79d6b38-918d-4914-bd75-df1acc5aa163" />
 
 ### Container Diagram
 
-<img width="1086" height="991" alt="Loan System - Container Diagram drawio" src="https://github.com/user-attachments/assets/060de14d-a83f-41bf-9417-c1af352131c4" />
+<img width="1086" height="991" alt="Loan System - Container Diagram drawio" src="https://github.com/user-attachments/assets/0dc59162-4033-4588-bb1b-72922b065c92" />
 
 ### Component Diagram
 
-<img width="1471" height="1201" alt="Loan System - Component Diagram drawio" src="https://github.com/user-attachments/assets/813fbf7a-7d43-454c-a47b-d6cdecff9c02" />
+<img width="1471" height="1201" alt="Loan System - Component Diagram drawio" src="https://github.com/user-attachments/assets/2913331d-ebf5-400b-80a3-5eceb2d2a9b4" />
 
 ## Code Quality & Tooling
 
