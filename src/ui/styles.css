@@ -1,0 +1,71 @@
+/* Modern Startup UI - Muted Neutrals with Bright Accents */
+
+.stButton>button p {
+    color: white !important;
+    font-weight: 700;
+}
+
+[data-testid="stAppViewContainer"] {
+    background-color: #F8F9FA; /* Off-white background */
+    color: #495057;
+}
+
+[data-testid="stHeader"] {
+    background-color: #FFFFFF;
+    color: #212529;
+    border-bottom: 1px solid #DEE2E6;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+[data-testid="stSidebar"] {
+    background-color: #FFFFFF;
+    border-right: 1px solid #DEE2E6;
+}
+
+.stButton>button {
+    background-color: #007BFF; /* Vibrant blue accent */
+    border-radius: 8px;
+    border: none;
+    padding: 12px 24px;
+    font-weight: 700;
+    font-size: 16px;
+    box-shadow: 0 4px 14px 0 rgba(0, 118, 255, 0.39);
+    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.stButton>button:hover {
+    background-color: #0056b3; /* Darker blue */
+    box-shadow: 0 6px 20px 0 rgba(0, 118, 255, 0.23);
+}
+
+[data-testid="stMetric"] {
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #DEE2E6;
+}
+
+[data-testid="stMetricLabel"] {
+    color: #495057;
+    font-weight: 500;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #212529; /* Almost black for high contrast */
+    font-weight: 700;
+}
+
+p, ol, ul, dl {
+    color: #495057; /* Medium gray for readability */
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+/* Minimalist adjustments */
+[data-testid="stToolbar"] {
+    display: none;
+}
+
+[data-testid="stDecoration"] {
+    display: none;
+}
