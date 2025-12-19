@@ -8,6 +8,6 @@ FROM python:3.12-slim
 WORKDIR /app
 COPY --from=requirements-stage /tmp/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
-COPY src/ /app/
+COPY src/ /app/src/
 EXPOSE 8080
-CMD ["streamlit", "run", "ui/main.py", "--server.port=8080", "--server.address=0.0.0.0"]
+CMD ["streamlit", "run", "src/ui/main.py", "--server.port=8080", "--server.address=0.0.0.0"]

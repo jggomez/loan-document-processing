@@ -53,7 +53,7 @@ def initialize_session_state():
                 "Government ID": 0.90,
                 "W-9": 0.85,
                 "Certificate of Insurance (COI)": 0.80,
-                "Unknown": 0.0,
+                "Unknown": 1.0,
             }
         }
     if "selected_document" not in st.session_state:
