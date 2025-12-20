@@ -42,9 +42,6 @@ class FacadeLoan:
     def classify_document(
         self, document_name: str
     ) -> tuple[DocumentClassificationOutput, str, dict[str, Any]]:
-        print("document_name")
-        print(document_name)
-
         document_url = self._storage_client.upload_file(
             bucket_name=self._bucket_name,
             source_file_name=f"resources/documents/{document_name}",
@@ -72,8 +69,13 @@ class FacadeLoan:
         return document_classification, document_id, usage
 
     def document_extraction(
-        self, document_id: str, document_type: str
-    ) -> tuple[list[DocumentFieldExtractionOutput], dict[str, Any]]:
+        self,
+        document_name: str,
+        document_id: str,
+        document_type: str,
+    ) -> tuple[list[DocumentFieldExtractionOutput], dict[str, Any], str]:
+        source_file_name = f"resources/documents/{document_name}"
+
         gemini_llm = self._llm_factory.create_llm(
             "gemini",
             {
@@ -92,9 +94,16 @@ class FacadeLoan:
             document_type=document_type,
         )
 
+        print(f"Source File Name: {source_file_name}")
+
+        annoted_file = data_document_extraction.draw_from_model_coords(
+            pdf_path=source_file_name,
+            extracted_fields=extraction.extracted_fields,
+        )
+
         print(f"Data Extraction: {extraction}")
 
-        return extraction.extracted_fields, usage
+        return extraction.extracted_fields, usage, annoted_file
 
     def save_learning_example(
         self, doc_type: str, field_name: str, ai_value: str, human_value: str
@@ -110,7 +119,7 @@ class FacadeLoan:
     @staticmethod
     def calculate_metrics(
         classify_data: list, extraction_data: list, ops_metrics: list
-    ) -> tuple[dict[Any, Any], list, dict[Any, Any]]:
+    ) -> tuple[dict[Any, Any] | None, Any, Any]:
         print("Calculating metrics...")
         print(f"Classify Data: {classify_data}")
         print(f"Extraction Data: {extraction_data}")

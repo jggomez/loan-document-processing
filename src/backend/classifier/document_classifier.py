@@ -1,5 +1,6 @@
 from typing import Any
 
+from google.genai import types
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -44,6 +45,8 @@ class DocumentClassifier:
                 "response_mime_type": "application/json",
                 "response_json_schema": DocumentClassificationOutput.model_json_schema(),
                 "temperature": 0.1,
+                "thinking_config": types.ThinkingConfig(thinking_level="minimal"),
+                "media_resolution": types.MediaResolution.MEDIA_RESOLUTION_HIGH,
             },
         )
 

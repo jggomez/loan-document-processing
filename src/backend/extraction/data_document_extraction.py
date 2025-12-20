@@ -1,5 +1,7 @@
 from typing import Any
 
+import fitz
+from google.genai import types
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -20,6 +22,9 @@ class DocumentFieldExtractionOutput(BaseModel):
     )
     page: int = Field(
         description="The page of the document where the field is located."
+    )
+    coordinates: list[int] = Field(
+        description="The coordinates of the field in the document."
     )
 
 
@@ -71,11 +76,68 @@ class DataDocumentExtraction:
                 "response_mime_type": "application/json",
                 "response_json_schema": DocumentListExtractionOutput.model_json_schema(),
                 "temperature": 0.1,
+                "thinking_config": types.ThinkingConfig(thinking_level="minimal"),
+                "media_resolution": types.MediaResolution.MEDIA_RESOLUTION_HIGH,
             },
         )
 
         document_extraction = DocumentListExtractionOutput.model_validate_json(response)
         return document_extraction, usage
+
+    def draw_from_model_coords(
+        self,
+        pdf_path: str,
+        extracted_fields: list[DocumentFieldExtractionOutput],
+    ) -> str:
+        doc = fitz.open(pdf_path)
+
+        for field in extracted_fields:
+            if field.page > len(doc) or not field.coordinates:
+                continue
+
+            page = doc[field.page - 1]
+            w, h = page.rect.width, page.rect.height
+
+            if field.coordinates:
+                ymin, xmin, ymax, xmax = field.coordinates
+
+                rect = fitz.Rect(
+                    (xmin / 1000) * w,
+                    (ymin / 1000) * h,
+                    (xmax / 1000) * w,
+                    (ymax / 1000) * h,
+                )
+
+                if page.rotation != 0:
+                    matrix = ~page.rotation_matrix
+                    rect_final = rect * matrix
+                else:
+                    rect_final = rect
+
+                rect_final.normalize()
+
+                if rect_final.width == 0:
+                    rect_final.x1 += 1
+                if rect_final.height == 0:
+                    rect_final.y1 += 1
+
+                if rect_final.is_empty or rect_final.is_infinite:
+                    continue
+
+                try:
+                    annot = page.add_rect_annot(rect_final)
+                    annot.set_colors(stroke=(1, 0, 0))
+                    annot.set_border(width=2)
+                    annot.update()
+                except ValueError as e:
+                    print(f"Error adding annotation for {field}: {e}")
+                    continue
+
+        output_path = pdf_path.replace(".pdf", "_annotated.pdf")
+
+        doc.save(output_path, encryption=fitz.PDF_ENCRYPT_KEEP)
+        doc.close()
+        return output_path
 
     def _get_schema(self, document_type: str) -> str:
         match document_type:

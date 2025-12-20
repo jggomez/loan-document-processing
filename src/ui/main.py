@@ -1,11 +1,12 @@
 import os
 import sys
+import time
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+import streamlit as st
 from backend import FacadeLoan
 from dotenv import load_dotenv
-import time
-import streamlit as st
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 
 load_dotenv()
@@ -73,9 +74,12 @@ def call_document_classifier(doc_name):
     predicted_type = document_classification.document_type
     confidence = document_classification.confidence
 
-    data_extraction, extraction_usage = facade_loan_system.document_extraction(
-        document_id=document_id,
-        document_type=predicted_type,
+    data_extraction, extraction_usage, annoted_file = (
+        facade_loan_system.document_extraction(
+            document_name=doc_name,
+            document_id=document_id,
+            document_type=predicted_type,
+        )
     )
 
     cost_usage = FacadeLoan.calculate_cost(
@@ -101,6 +105,7 @@ def call_document_classifier(doc_name):
             "type_confidence": confidence,
             "type_confidence_original": confidence,
             "fields": document_fields,
+            "file": annoted_file,
         }
     )
 
@@ -132,6 +137,22 @@ def main():
     st.markdown("# Loan Document Processing")
     st.markdown("Upload, classify, and review loan application documents.")
 
+    st.sidebar.page_link(
+        "https://storage.googleapis.com/questionsanswersproject/loan_system/examples/bank_statement_dec_2020.pdf",
+        label="Example Document 1",
+        icon="📄",
+    )
+    st.sidebar.page_link(
+        "https://storage.googleapis.com/questionsanswersproject/loan_system/examples/insurance_card_2.pdf",
+        label="Example Document 2",
+        icon="📄",
+    )
+    st.sidebar.page_link(
+        "https://storage.googleapis.com/questionsanswersproject/loan_system/examples/state_id.pdf",
+        label="Example Document 3",
+        icon="📄",
+    )
+
     with st.sidebar:
         with st.container(border=True):
             st.header("Upload Documents")
@@ -152,7 +173,7 @@ def main():
                     if uploaded_file.name not in st.session_state.documents:
                         file_path = save_file_locally(uploaded_file)
                         st.session_state.documents[uploaded_file.name] = {
-                            "file": uploaded_file.getvalue(),
+                            # "file": uploaded_file.getvalue(),
                             "status": "Processing",
                             "predicted_type": "Unknown",
                             "type_confidence": 0.0,

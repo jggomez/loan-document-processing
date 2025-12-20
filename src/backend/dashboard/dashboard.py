@@ -7,10 +7,13 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_recall_fscore_support
 
 
-def calculate_tagging_metrics(docs_data: list) -> dict:
+def calculate_tagging_metrics(docs_data: list) -> dict | None:
     """
     docs_data: dictionary [{'predicted_type': 'w9', 'actual_type': 'w9'}, ...]
     """
+    if not docs_data:
+        return None
+
     df = pd.DataFrame(docs_data)
     y_pred = df["predicted_type"]
     y_true = df["actual_type"]
